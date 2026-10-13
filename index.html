@@ -520,9 +520,9 @@ textarea{resize:vertical;min-height:78px;}
 
       <!-- Admin Tabs -->
       <div class="admin-tabs">
-        <button class="admin-tab active" onclick="showAdminTab('week')">📅 Post Week Results</button>
-        <button class="admin-tab" onclick="showAdminTab('players')">👥 Players &amp; Teams</button>
-        <button class="admin-tab" onclick="showAdminTab('roster')">📋 Roster View</button>
+        <button class="admin-tab active" onclick="showAdminTab('week',this)">📅 Post Week Results</button>
+        <button class="admin-tab" onclick="showAdminTab('players',this)">👥 Players &amp; Teams</button>
+        <button class="admin-tab" onclick="showAdminTab('roster',this)">📋 Roster View</button>
       </div>
 
       <!-- TAB: POST WEEK RESULTS -->
@@ -640,6 +640,9 @@ const ADMINS = {
   'jake':  'wildwood2027',
   'sonya': 'wildwood2027'
 };
+
+// In-memory admin session (sessionStorage unreliable in iframe/artifact context)
+let _adminUser = null;
 
 // ============================================================
 // DATA STORE — localStorage
@@ -975,19 +978,19 @@ function renderAdminStats() {
 function doLogin() {
   const user = document.getElementById('loginUser').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
-  const alert = document.getElementById('loginAlert');
+  const alertEl = document.getElementById('loginAlert');
   if (ADMINS[user] && ADMINS[user] === pass) {
-    sessionStorage.setItem('wgl_admin', user);
-    alert.style.display = 'none';
+    _adminUser = user;
+    alertEl.style.display = 'none';
     showAdminPanel(user);
   } else {
-    alert.style.display = 'block';
+    alertEl.style.display = 'block';
     document.getElementById('loginPass').value = '';
   }
 }
 
 function doLogout() {
-  sessionStorage.removeItem('wgl_admin');
+  _adminUser = null;
   document.getElementById('adminPanelScreen').style.display = 'none';
   document.getElementById('adminLoginScreen').style.display = 'block';
   document.getElementById('loginUser').value = '';
@@ -995,9 +998,8 @@ function doLogout() {
 }
 
 function checkAdminSession() {
-  const user = sessionStorage.getItem('wgl_admin');
-  if (user) {
-    showAdminPanel(user);
+  if (_adminUser) {
+    showAdminPanel(_adminUser);
   } else {
     document.getElementById('adminPanelScreen').style.display = 'none';
     document.getElementById('adminLoginScreen').style.display = 'block';
@@ -1018,11 +1020,11 @@ function showAdminPanel(user) {
   }
 }
 
-function showAdminTab(tab) {
+function showAdminTab(tab, btn) {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('adminTab-' + tab).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 // ============================================================
