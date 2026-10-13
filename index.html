@@ -946,7 +946,7 @@ function exportRoster() {
     if (!teams[t]) teams[t] = [];
     teams[t].push(p);
   });
-  let text = 'WILDWOOD MEN'S GOLF LEAGUE — ROSTER\n' + '='.repeat(40) + '\n\n';
+  let text = "WILDWOOD MEN'S GOLF LEAGUE — ROSTER\n" + '='.repeat(40) + '\n\n';
   Object.keys(teams).sort().forEach(team => {
     text += `TEAM: ${team}\n`;
     teams[team].forEach(p => {
@@ -1047,7 +1047,7 @@ function renderHome() {
   if (latest.proScore !== null && latest.winScore !== null) {
     proSec.style.display = 'block';
     document.getElementById('homeProScore').textContent = latest.proScore;
-    document.getElementById('homeProDesc').textContent = 'This week's pro shop target on the ' + nine.label + '.';
+    document.getElementById('homeProDesc').textContent = "This week's pro shop target on the " + nine.label + '.';
     const box = document.getElementById('homeProResultBox');
     if (latest.winScore <= latest.proScore) {
       box.innerHTML = `<div class="pro-result-box pro-result-beat">🏆 ${latest.teams[0]?.name || 'Winning Team'} BEAT the Pro Shop! (${latest.winScore})</div>`;
